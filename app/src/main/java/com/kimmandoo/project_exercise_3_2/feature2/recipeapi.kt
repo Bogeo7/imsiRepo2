@@ -13,11 +13,11 @@ interface recipeapi {
 //        @Query("query") userName: String
     ): Call<JsonArray>
 
-    @GET("/update/update_ingredient.php?Uingredient=onion&")
-    fun minusOne(
-//        @Query("Uingredient") Uingredient: String,
-        @Query("Ucnt") Ucnt: String,
-    ): Call<JsonArray>
+//    @GET("/update/update_ingredient.php?Uingredient=onion&")
+//    fun minusOne(
+////        @Query("Uingredient") Uingredient: String,
+//        @Query("Ucnt") Ucnt: String,
+//    ): Call<JsonArray>
 
     @GET("/json.php")
     fun getResult(

@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface IngredientListAPI {
-    @GET("/show/show_temptable.php")
+    @GET("/show/show_test2.php")
     fun getResult(
 //        @Query("serviceKey") serviceKey: String,
 //        @Query("query") userName: String

@@ -14,7 +14,7 @@ data class recipe(
     val step7: String,
     val step8: String,
     val url: String,
-    val matchCount : Int
+    var matchCount : Int
 )
 
 data class refrige(

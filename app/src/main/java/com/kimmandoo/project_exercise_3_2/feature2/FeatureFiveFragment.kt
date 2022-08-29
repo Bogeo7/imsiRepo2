@@ -1,24 +1,15 @@
 package com.kimmandoo.project_exercise_3_2.feature2;
 
-import android.R.attr
-import android.app.Activity.RESULT_OK
-import android.content.Context
-import android.content.Intent
-import android.icu.number.Notation.simple
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
-import com.kimmandoo.project_exercise_3_2.databinding.FragmentFeatureFourBinding
+import com.kimmandoo.project_exercise_3_2.databinding.RecipelistviewBinding
 import org.json.JSONObject
 import org.json.JSONTokener
 import retrofit2.Call
@@ -26,15 +17,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import org.json.JSONArray as JSONArray2
 
 
+
 class FeatureFiveFragment : Fragment() {
     private val serviceKey = "Cname"
-    private var _binding: FragmentFeatureFourBinding? = null
+    private var _binding: RecipelistviewBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +34,7 @@ class FeatureFiveFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFeatureFourBinding.inflate(inflater, container, false)
+        _binding = RecipelistviewBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -66,6 +56,8 @@ class FeatureFiveFragment : Fragment() {
         var resultJsonArray : JsonArray?
         var resultRefrigeJSON : JsonArray?
         val items = mutableListOf<recipe>()
+        var adapter: FiveFragmentAdapter_RecyclerView
+        val views = mutableListOf<refrige>()
 
         callResult.enqueue(object : Callback<JsonArray> {
             override fun onResponse(
@@ -98,10 +90,21 @@ class FeatureFiveFragment : Fragment() {
                     val list = Ingredient.substring(1,Ingredient.length-1).split(", ").toList()
                     items.add(recipe(name, list, chief, step1, step2, step3, step4, step5, step6, step7, step8, url, match))
                 }
-                val mainItems = items.filter { it.chief == "A" }
-                val subItems = items.filter { it.chief != "A" }
-                Log.d("List","$mainItems")
-                Log.d("sub:","$subItems")
+//                val mainItems = items.filter { it.chief == "A" }
+//                val subItems = items.filter { it.chief != "A" }
+                Log.d("List","$items")
+
+                for( i in items.indices){
+                    val matchCounter = (items[i].Ingredient).count() - (items[i].Ingredient).minus(listOf<String>("onion","rice","kimchi")).count()
+                    items[i].matchCount = matchCounter
+                    Log.d("count","$matchCounter")
+
+                }
+                items.sortBy { it.matchCount }
+                items.reverse()
+
+                Log.d("match","$items")
+
             }
 
             override fun onFailure(call: Call<JsonArray>, t: Throwable) {
@@ -111,29 +114,38 @@ class FeatureFiveFragment : Fragment() {
 
         })
 
-//        refrigeResult.enqueue(object : Callback<JsonArray>{
-//            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
-//                resultRefrigeJSON = response.body()
-//                val refrigelist = mutableListOf<refrige>()
-//
-//                val jsonArray = JSONTokener(resultRefrigeJSON.toString()).nextValue() as JSONArray2
-//                for (i in 0 until jsonArray.length()) {
-//                    val name = jsonArray.getJSONObject(i).getString("name")
-//                    refrigelist.add(refrige(name))
-//                }
-//                Log.d("List","$refrigelist")
-//            }
-//
-//            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
-//                Log.d("FeatTwo", "실패 : $t")
-//            }
-//
-//        })
+        refrigeResult.enqueue(object : Callback<JsonArray>{
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                resultRefrigeJSON = response.body()
+                val refrigelist = mutableListOf<refrige>()
 
-        fun sortrecipe(){
-            for (){
-
+                val jsonArray = JSONTokener(resultRefrigeJSON.toString()).nextValue() as JSONArray2
+                for (i in 0 until jsonArray.length()) {
+                    val name = jsonArray.getJSONObject(i).getString("temp")
+                    refrigelist.add(refrige(name))
+                }
+                Log.d("List","$refrigelist")
             }
-        }
+
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                Log.d("FeatTwo", "실패 : $t")
+            }
+
+        })
+
+
+
+//        fun sortrecipe(){
+//            var listfilter = items.map { item -> (item.Ingredient + "onion").distinct()}
+//
+//            Log.d("filter","$listfilter")
+//        }
+//        sortrecipe()
+//        fun initRecycler(){
+//            adapter = FiveFragmentAdapter_RecyclerView(this)
+//            recipe
+//
+//        }
     }
+
 }
