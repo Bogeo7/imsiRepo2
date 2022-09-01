@@ -1,9 +1,9 @@
-package com.kimmandoo.project_exercise_3_2.feature2
-
+package com.kimmandoo.project_exercise_3_2.OtherFeature
 import java.util.*
 
-data class Test(
+data class recipe(
     val name: String,
+    var Ingredient : List<String>,
     val chief: String,
     val step1: String,
     val step2: String,
@@ -13,4 +13,10 @@ data class Test(
     val step6: String,
     val step7: String,
     val step8: String,
+    val url: String,
+    var matchCount : Int
+)
+
+data class refrige(
+    val name: String
 )

@@ -1,4 +1,4 @@
-package com.kimmandoo.project_exercise_3_2.feature2
+package com.kimmandoo.project_exercise_3_2.OtherFeature
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kimmandoo.project_exercise_3_2.R
+import com.kimmandoo.project_exercise_3_2.OtherFeature.recipe
 
 class ListAdapter_RecyclerView(private val recipecon: ArrayList<recipe>) : RecyclerView.Adapter<ListAdapter_RecyclerView.ViewHolder>(){
 

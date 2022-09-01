@@ -1,4 +1,4 @@
-package com.kimmandoo.project_exercise_3_2.feature2
+package com.kimmandoo.project_exercise_3_2.OtherFeature
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject

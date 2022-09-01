@@ -13,9 +13,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.kimmandoo.project_exercise_3_2.databinding.ActivityMainBinding
-import com.kimmandoo.project_exercise_3_2.feature1.FeatureOneFragment
-import com.kimmandoo.project_exercise_3_2.feature1.FeatureOneViewModel
-import com.kimmandoo.project_exercise_3_2.feature2.*
+import com.kimmandoo.project_exercise_3_2.OtherFeature.ListAdapter_RecyclerView
+import com.kimmandoo.project_exercise_3_2.OtherFeature.recipe
+import com.kimmandoo.project_exercise_3_2.OtherFeature.recipeapi
+import com.kimmandoo.project_exercise_3_2.OtherFeature.refrige
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
@@ -134,12 +135,15 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+        getListData()
 
     }
     private fun getListData(){
         for(i in items.indices){
-            addlist = (items[i].name as Array<String>, items
+            addlist.plus(arrayOf<String>(items[i].name, items[i].chief))
+//            addlist = (items[i].name as Array<String>, items
         }
+        Log.d("list","$addlist")
         recipeRecyclerview.adapter = ListAdapter_RecyclerView(items as ArrayList<recipe> /* = java.util.ArrayList<com.kimmandoo.project_exercise_3_2.feature2.recipe> */)
     }
 
