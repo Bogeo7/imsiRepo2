@@ -20,3 +20,8 @@ data class recipe(
 data class refrige(
     val name: String
 )
+
+data class recycler(
+    var Tname: String,
+    var Tcheif: String
+)

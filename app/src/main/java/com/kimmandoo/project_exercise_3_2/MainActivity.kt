@@ -12,11 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
+import com.kimmandoo.project_exercise_3_2.OtherFeature.*
 import com.kimmandoo.project_exercise_3_2.databinding.ActivityMainBinding
-import com.kimmandoo.project_exercise_3_2.OtherFeature.ListAdapter_RecyclerView
-import com.kimmandoo.project_exercise_3_2.OtherFeature.recipe
-import com.kimmandoo.project_exercise_3_2.OtherFeature.recipeapi
-import com.kimmandoo.project_exercise_3_2.OtherFeature.refrige
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
@@ -33,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var container = -1
     private lateinit var recipeRecyclerview : RecyclerView
     private lateinit var recyclerArray : ArrayList<recipe>
-    lateinit var addlist : Array<String>
+    var addlist = mutableListOf<recycler>()
     val items = mutableListOf<recipe>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,11 +137,12 @@ class MainActivity : AppCompatActivity() {
     }
     private fun getListData(){
         for(i in items.indices){
-            addlist.plus(arrayOf<String>(items[i].name, items[i].chief))
-//            addlist = (items[i].name as Array<String>, items
+            var Ttext = items[i].name
+            var Tcheif = items[i].chief
+            addlist.add(recycler(Ttext,Tcheif))
         }
         Log.d("list","$addlist")
-        recipeRecyclerview.adapter = ListAdapter_RecyclerView(items as ArrayList<recipe> /* = java.util.ArrayList<com.kimmandoo.project_exercise_3_2.feature2.recipe> */)
+        recipeRecyclerview.adapter = ListAdapter_RecyclerView(addlist /* = java.util.ArrayList<com.kimmandoo.project_exercise_3_2.feature2.recipe> */)
     }
 
 }
