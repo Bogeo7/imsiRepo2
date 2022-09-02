@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kimmandoo.project_exercise_3_2.R
 import com.kimmandoo.project_exercise_3_2.OtherFeature.recipe
 
-class ListAdapter_RecyclerView(private val recipecon: ArrayList<recycler>) : RecyclerView.Adapter<ListAdapter_RecyclerView.ViewHolder>(){
+class ListAdapter_RecyclerView(private val recipecon: MutableList<recycler>) : RecyclerView.Adapter<ListAdapter_RecyclerView.ViewHolder>(){
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListAdapter_RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.activity_main, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.recipe_view_item, parent, false)
         return ViewHolder(view)
 //        val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.recipelistview, parent, false)
 //        return FiveFragmentAdapter_RecyclerView.ViewHolder(inflatedView)

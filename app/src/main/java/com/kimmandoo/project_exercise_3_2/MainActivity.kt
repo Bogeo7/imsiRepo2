@@ -31,15 +31,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recipeRecyclerview : RecyclerView
     private lateinit var recyclerArray : ArrayList<recipe>
     var addlist = mutableListOf<recycler>()
+    lateinit var adapter: ListAdapter_RecyclerView
     val items = mutableListOf<recipe>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        container = binding.container.id
+//        container = binding.container.id
         recipeRecyclerview = findViewById(R.id.recipeList_recycle)
         recipeRecyclerview.layoutManager = LinearLayoutManager(this)
-        recipeRecyclerview.setHasFixedSize(true)
+//        recipeRecyclerview.setHasFixedSize(true)
 
         var gson = GsonBuilder().setLenient().create()
         val retrofit = Retrofit.Builder()
@@ -56,7 +57,6 @@ class MainActivity : AppCompatActivity() {
         val refrigeResult = api.getRefrigeTable()
         var resultJsonArray : JsonArray?
         var resultRefrigeJSON : JsonArray?
-        var adapter: ListAdapter_RecyclerView
         val views = mutableListOf<refrige>()
 
         callResult.enqueue(object : Callback<JsonArray> {
@@ -105,6 +105,7 @@ class MainActivity : AppCompatActivity() {
 
                 Log.d("match","$items")
                 getListData()
+                adapter.notifyDataSetChanged()
             }
 
             override fun onFailure(call: Call<JsonArray>, t: Throwable) {
@@ -114,24 +115,26 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-//        refrigeResult.enqueue(object : Callback<JsonArray> {
-//            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
-//                resultRefrigeJSON = response.body()
-//                val refrigelist = mutableListOf<refrige>()
-//
-//                val jsonArray = JSONTokener(resultRefrigeJSON.toString()).nextValue() as JSONArray
-//                for (i in 0 until jsonArray.length()) {
-//                    val name = jsonArray.getJSONObject(i).getString("temp")
-//                    refrigelist.add(refrige(name))
-//                }
-//                Log.d("List","$refrigelist")
-//            }
-//
-//            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
-//                Log.d("FeatTwo", "실패 : $t")
-//            }
-//
-//        })
+        refrigeResult.enqueue(object : Callback<JsonArray> {
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                resultRefrigeJSON = response.body()
+                val refrigelist = mutableListOf<refrige>()
+
+                val jsonArray = JSONTokener(resultRefrigeJSON.toString()).nextValue() as JSONArray
+                for (i in 0 until jsonArray.length()) {
+                    val name = jsonArray.getJSONObject(i).getString("temp")
+                    refrigelist.add(refrige(name))
+                }
+                Log.d("List","$refrigelist")
+                getListData()
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                Log.d("FeatTwo", "실패 : $t")
+            }
+
+        })
 
 
     }
@@ -142,7 +145,7 @@ class MainActivity : AppCompatActivity() {
             addlist.add(recycler(Ttext,Tcheif))
         }
         Log.d("list","$addlist")
-        recipeRecyclerview.adapter = ListAdapter_RecyclerView(addlist as ArrayList<recycler> /* = java.util.ArrayList<com.kimmandoo.project_exercise_3_2.feature2.recipe> */)
+//        recipeRecyclerview.adapter = ListAdapter_RecyclerView(addlist as ArrayList<recycler> /* = java.util.ArrayList<com.kimmandoo.project_exercise_3_2.feature2.recipe> */)
     }
 
 }
