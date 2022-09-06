@@ -3,10 +3,6 @@ package com.kimmandoo.project_exercise_3_2
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -14,13 +10,14 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.kimmandoo.project_exercise_3_2.OtherFeature.*
 import com.kimmandoo.project_exercise_3_2.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
 
@@ -28,17 +25,20 @@ class MainActivity : AppCompatActivity() {
     private val serviceKey = "Cname"
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var container = -1
-    private lateinit var recipeRecyclerview : RecyclerView
-    private lateinit var recyclerArray : ArrayList<recipe>
+    private lateinit var recipeRecyclerview: RecyclerView
+    private lateinit var recyclerArray: ArrayList<recipe>
     var addlist = mutableListOf<recycler>()
-    lateinit var adapter: ListAdapter_RecyclerView
     val items = mutableListOf<recipe>()
+    lateinit var adapter: ListAdapter_RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
 //        container = binding.container.id
         recipeRecyclerview = findViewById(R.id.recipeList_recycle)
+        adapter = ListAdapter_RecyclerView(addlist)
+        recipeRecyclerview.adapter = adapter
         recipeRecyclerview.layoutManager = LinearLayoutManager(this)
 //        recipeRecyclerview.setHasFixedSize(true)
 
@@ -55,8 +55,8 @@ class MainActivity : AppCompatActivity() {
         * */
         val callResult = api.getResult()
         val refrigeResult = api.getRefrigeTable()
-        var resultJsonArray : JsonArray?
-        var resultRefrigeJSON : JsonArray?
+        var resultJsonArray: JsonArray?
+        var resultRefrigeJSON: JsonArray?
         val views = mutableListOf<refrige>()
 
         callResult.enqueue(object : Callback<JsonArray> {
@@ -69,8 +69,15 @@ class MainActivity : AppCompatActivity() {
 //                Log.d("FeatTwo", "json : ${resultJsonArray.toString()}")
 
                 val jsonArray = JSONTokener(resultJsonArray.toString()).nextValue() as JSONArray
-                val convertArray = MutableList<JSONObject>(jsonArray.length()) { i -> jsonArray.getJSONObject(i)}. map {  Gson().fromJson<HashMap<String, String>>(it.toString(), HashMap::class.java) }
-                val filterMainIngredient = convertArray.filter { it?.get("mainIngredient") == "tomato" }
+                val convertArray =
+                    MutableList<JSONObject>(jsonArray.length()) { i -> jsonArray.getJSONObject(i) }.map {
+                        Gson().fromJson<HashMap<String, String>>(
+                            it.toString(),
+                            HashMap::class.java
+                        )
+                    }
+                val filterMainIngredient =
+                    convertArray.filter { it?.get("mainIngredient") == "tomato" }
 //                val mainItems = filterMainIngredient.filter { it?.get("chief") == "A" }
 //                val subItems = filterMainIngredient.filter { it?.get("chief") != "A" }
                 for (i in 0 until jsonArray.length()) {
@@ -87,33 +94,55 @@ class MainActivity : AppCompatActivity() {
                     val Ingredient = jsonArray.getJSONObject(i).getString("ingredient")
                     val url = jsonArray.getJSONObject(i).getString("link")
                     val match = 0
-                    val list = Ingredient.substring(1,Ingredient.length-1).split(", ").toList()
-                    items.add(recipe(name, list, chief, step1, step2, step3, step4, step5, step6, step7, step8, url, match))
+                    val list = Ingredient.substring(1, Ingredient.length - 1).split(", ").toList()
+                    items.add(
+                        recipe(
+                            name,
+                            list,
+                            chief,
+                            step1,
+                            step2,
+                            step3,
+                            step4,
+                            step5,
+                            step6,
+                            step7,
+                            step8,
+                            url,
+                            match
+                        )
+                    )
                 }
 //                val mainItems = items.filter { it.chief == "A" }
 //                val subItems = items.filter { it.chief != "A" }
-                Log.d("List","$items")
+                Log.d("List", "$items")
 
-                for( i in items.indices){
-                    val matchCounter = (items[i].Ingredient).count() - (items[i].Ingredient).minus(listOf<String>("onion","rice","kimchi")).count()
+                for (i in items.indices) {
+                    val matchCounter = (items[i].Ingredient).count() - (items[i].Ingredient).minus(
+                        listOf<String>(
+                            "onion",
+                            "rice",
+                            "kimchi"
+                        )
+                    ).count()
                     items[i].matchCount = matchCounter
-                    Log.d("count","$matchCounter")
+                    Log.d("count", "$matchCounter")
 
                 }
                 items.sortBy { it.matchCount }
                 items.reverse()
-
-                Log.d("match","$items")
                 getListData()
                 adapter.notifyDataSetChanged()
+
+                Log.d("match", "$items")
+
             }
 
             override fun onFailure(call: Call<JsonArray>, t: Throwable) {
                 Log.d("FeatTwo", "실패 : $t")
             }
-
-
         })
+
 
         refrigeResult.enqueue(object : Callback<JsonArray> {
             override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
@@ -125,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                     val name = jsonArray.getJSONObject(i).getString("temp")
                     refrigelist.add(refrige(name))
                 }
-                Log.d("List","$refrigelist")
+                Log.d("List", "$refrigelist")
                 getListData()
                 adapter.notifyDataSetChanged()
             }
@@ -136,16 +165,17 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-
     }
-    private fun getListData(){
-        for(i in items.indices){
+
+    private fun getListData() {
+        Log.d("GetList:items", "$items")
+        for (i in items.indices) {
             var Ttext = items[i].name
             var Tcheif = items[i].chief
-            addlist.add(recycler(Ttext,Tcheif))
+            addlist.add(recycler(Ttext, Tcheif))
+            Log.d("GetList", "$addlist")
         }
-        Log.d("list","$addlist")
-//        recipeRecyclerview.adapter = ListAdapter_RecyclerView(addlist as ArrayList<recycler> /* = java.util.ArrayList<com.kimmandoo.project_exercise_3_2.feature2.recipe> */)
+        Log.d("list", "$addlist")
     }
 
 }

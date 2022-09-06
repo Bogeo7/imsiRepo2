@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">Project-exercise-3-2</string>
+    <string name="app_name">오내요</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="textview">TextView</string>
+    <string name="recipe_title">레시피</string>
+    <string name="video_title">동영상</string>
+    <string name="require_ingerdient">필요 재료</string>
+    <string name="ingerdient_list">ingerdient_list</string>
 </resources>
